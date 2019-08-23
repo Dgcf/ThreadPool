@@ -4,8 +4,16 @@ ThreadPool::ThreadPool(int taskNum):
 maxTask_(taskNum),
 running_(false),
 t1_(0),
-t2_(0)
+t2_(0),
+t1(1),
+t2(2),
+t3(3)
 { }
+
+ThreadPool::~ThreadPool()
+{
+    //notify_all_at_thread_exit()
+}
 
 void ThreadPool::Start(int threadNums)
 {
@@ -22,7 +30,6 @@ void ThreadPool::RunInThread()
 {
     while (running_)
     {
-        cout << t1_.fetch_add(1) << endl;
         Task task(Get_task());
         if(task)
         {
@@ -40,25 +47,20 @@ void ThreadPool::Set_Task(Task task)
     }
     
     taskQueue_.push_back(task);
-    //cout << "task size is: " << taskQueue_.size() << endl; 
     notEmptyCond_.notify_all();
 }
 
 ThreadPool::Task ThreadPool::Get_task()
 {
-    //cout << "Enter in Get_task" << endl;
-    std::unique_lock<std::mutex> get_lock(mutex1_);
+    std::unique_lock<std::mutex> get_lock(mutex_);
     while (taskQueue_.empty())
     {
-        //cout << "task queue is empty" << endl;
         notEmptyCond_.wait(get_lock, [this]{  return !taskQueue_.empty(); });
     }
 
     Task task = taskQueue_.front();
     taskQueue_.pop_front();
     notFullCond_.notify_all();
-    //cout << t2_.fetch_add(1) << endl;
-    //cout << "get_task: task size() is " << taskQueue_.size() << endl;
     return task;
 }
 

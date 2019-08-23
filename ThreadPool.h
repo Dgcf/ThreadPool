@@ -6,6 +6,16 @@
     DELETE_COPY_CTOR(CLASS) \
     DELETE_COPY_ASSIGN(CLASS)
 
+class TestClass
+{
+public:
+    TestClass(int x):i(x){}
+    ~TestClass(){cout << "~TestClass: " << i << endl; }
+
+private:
+    int i;
+};
+
 class ThreadPool
 {
 public:
@@ -14,6 +24,7 @@ public:
 
 public:
     explicit ThreadPool(int taskNum);
+    ~ThreadPool();
 
 public:
     void Start(int threadNums);
@@ -29,13 +40,14 @@ private:
 private:
     std::vector<unique_ptr<Thread>> thread_;
     std::deque<Task> taskQueue_;
-    std::mutex mutex_;
-    std::mutex mutex1_;
-    std::mutex mutex2_;
+    TestClass t3;
     std::condition_variable notFullCond_;
     std::condition_variable notEmptyCond_;
+    TestClass t2;
+    std::mutex mutex_;
     int maxTask_;
     bool running_;
+    TestClass t1;
     std::atomic<int> t1_;
     std::atomic<int> t2_;
 };

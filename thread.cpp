@@ -15,9 +15,11 @@ start_(false)
 
 Thread::~Thread()
 {
-    if (start_)
+    //if (start_)
     {
+        printf("Cancel thread\n");
         pthread_detach(thread_id_);
+        pthread_cancel(thread_id_);
         start_ = false;
     }
 }
