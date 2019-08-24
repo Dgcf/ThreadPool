@@ -7,12 +7,13 @@ t1_(0),
 t2_(0),
 t1(1),
 t2(2),
-t3(3)
+t3(3),
+exit_(false)
 { }
 
 ThreadPool::~ThreadPool()
 {
-    //notify_all_at_thread_exit()
+    Stop();
 }
 
 void ThreadPool::Start(int threadNums)
@@ -36,6 +37,7 @@ void ThreadPool::RunInThread()
             task();
         }
     }
+    printf("Run Thread return \n");
 }
 
 void ThreadPool::Set_Task(Task task)
@@ -55,12 +57,18 @@ ThreadPool::Task ThreadPool::Get_task()
     std::unique_lock<std::mutex> get_lock(mutex_);
     while (taskQueue_.empty())
     {
-        notEmptyCond_.wait(get_lock, [this]{  return !taskQueue_.empty(); });
+        notEmptyCond_.wait(get_lock, [this]{  return !taskQueue_.empty() || exit_;}); 
     }
-
+    if (exit_.load())
+        {
+            printf("return\n");
+            return nullptr;
+        }
+    
     Task task = taskQueue_.front();
     taskQueue_.pop_front();
     notFullCond_.notify_all();
+    
     return task;
 }
 
@@ -73,4 +81,19 @@ size_t ThreadPool::taskQueueSize()
 {
     std::lock_guard<std::mutex> lc(mutex_);
     return taskQueue_.size();
+}
+
+void ThreadPool::Stop()
+{
+    std::lock_guard<std::mutex> lc(mutex_);
+    running_ = false;
+    exit_.store(true);
+    notEmptyCond_.notify_all();
+    std::vector<unique_ptr<Thread>>::const_iterator iter = thread_.begin();
+    for (; iter != thread_.cend(); ++iter)
+    {
+        (*iter)->Join();
+    }
+    
+    printf("*****Stop *****\n");
 }

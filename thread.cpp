@@ -18,8 +18,8 @@ Thread::~Thread()
     //if (start_)
     {
         printf("Cancel thread\n");
-        pthread_detach(thread_id_);
-        pthread_cancel(thread_id_);
+        //pthread_detach(thread_id_);
+        //pthread_cancel(thread_id_);
         start_ = false;
     }
 }
@@ -34,9 +34,12 @@ void Thread::Start()
 
 void Thread::Join()
 {
-    if (!join_)
+    //printf("thread_id is: %ld\n", thread_id_);
+    pthread_detach(thread_id_);
+    //pthread_cancel(thread_id_);
+   //if (!join_)
     {
-        pthread_join(thread_id_, NULL);
+        
     }
 }
 

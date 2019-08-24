@@ -36,6 +36,7 @@ public:
 private:
     inline bool isFull() const;
     inline size_t taskQueueSize();
+    void Stop();
 
 private:
     std::vector<unique_ptr<Thread>> thread_;
@@ -43,6 +44,7 @@ private:
     TestClass t3;
     std::condition_variable notFullCond_;
     std::condition_variable notEmptyCond_;
+    
     TestClass t2;
     std::mutex mutex_;
     int maxTask_;
@@ -50,4 +52,5 @@ private:
     TestClass t1;
     std::atomic<int> t1_;
     std::atomic<int> t2_;
+    std::atomic<bool> exit_;
 };

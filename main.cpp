@@ -25,6 +25,7 @@ void task_0()
 {
     int n = di(dre);
     this_thread::sleep_for(std::chrono::milliseconds(n));
+    //printf("task_0 is running\n");
 }
 
 void StartThread()
@@ -41,7 +42,7 @@ void StartThread()
     pool.Set_Task(task_2);
     pool.Set_Task(task_3);
     
-    this_thread::sleep_for(std::chrono::milliseconds(12000));
+    this_thread::sleep_for(std::chrono::milliseconds(10000));
     printf("Leave StartThread\n");
 }
 
