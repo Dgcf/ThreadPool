@@ -1,53 +1,89 @@
 #include "ThreadPoolUnitTest.h"
+#include "msgqueue.h"
 
+MsgQueue<string> msg;
+std::atomic<int> all_num(0);
 void task_1()
 {
-    cout << "Enter in task_1" << endl;
+    string s = msg.take();
+    printf("take_1 msg is : %s\n", s.c_str());
+    all_num.fetch_add(1);
     this_thread::sleep_for(std::chrono::milliseconds(80));
-    cout << "Leave in task_1" << endl;
 }
-
 void task_2()
 {
-    cout << "Enter in task_2" << endl;
+    string s = msg.take();
+    printf("take_2 msg is : %s\n", s.c_str());
+    all_num.fetch_add(1);
     this_thread::sleep_for(std::chrono::milliseconds(60));
-    cout << "Leave in task_2" << endl;
 }
 
 void task_3()
 {
-    cout << "Enter in task_3" << endl;
+    string s = msg.take();
+    printf("take_3 msg is : %s\n", s.c_str());
+    all_num.fetch_add(1);
     this_thread::sleep_for(std::chrono::milliseconds(70));
-    cout << "Leave in task_3" << endl;
 }
-
-int i = 0;
-std::default_random_engine dre;
-std::uniform_int_distribution<int> di(200, 500);
-std::atomic<int> flag(0);
 
 void task_0()
 {
-    //int n = di(dre);
-    //cout << "index is: " << flag.fetch_add(1) << endl;
-    //this_thread::sleep_for(std::chrono::milliseconds(n));
-    int a = 0;
-    int b = a+10;
+    string s = msg.take();
+    all_num.fetch_add(1);
+    printf("task_0 msg is: %s\n", s.c_str());
+}
+
+void Add_msg1()
+{
+    vector<string> vec_msg = {
+        "hello", "zhangshuhi", "is", "big", "God", "She", "Very", "Stronge", "But", "Also", "Study", "Hard", "So", "what", "are", "you", "Waiting", "for"
+    };
+    int size = vec_msg.size();
+    std::default_random_engine dre;
+    std::uniform_int_distribution<int> di(0, size-1);
+    while (true)
+    {
+        int index = di(dre);
+        printf("english index is: %d\n", index);
+        msg.put(vec_msg.at(index));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
+void Add_msg2()
+{
+    vector<string> vec_msg = {
+        "哈啰", "张淑慧", "是一位", "大", "神级别", "她是", "非常", "强大", "但是", "也照样", "学习", "努力地", "所以", "什么", "是在", "你", "等待", "为了"
+    };
+    int size = vec_msg.size();
+    std::default_random_engine dre;
+    std::uniform_int_distribution<int> di(0, size-1);
+    while (true)
+    {
+        int index = di(dre);
+        printf("chinese index is: %d\n", index);
+        msg.put(vec_msg.at(index));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 }
 
 void StartThread()
 {
     ThreadPool pool(15);
     pool.Start(12);
-    this_thread::sleep_for(std::chrono::milliseconds(6000));
-    for (int i = 0; i < 50; i++)
+    this_thread::sleep_for(std::chrono::milliseconds(1000));
+    pool.Set_Task(Add_msg1);
+    pool.Set_Task(Add_msg2);
+    while (true)
     {
         pool.Set_Task(task_0);
+        pool.Set_Task(task_1);
+        pool.Set_Task(task_2);
+        pool.Set_Task(task_3);
     }
     
-    pool.Set_Task(task_1);
-    pool.Set_Task(task_2);
-    pool.Set_Task(task_3);
+    this_thread::sleep_for(std::chrono::milliseconds(10000));
+    printf("all num: %d\n", all_num.load());
 }
 
 // class ThreadPoolTest: public testing::Test
