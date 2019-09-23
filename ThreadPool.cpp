@@ -5,9 +5,7 @@ maxTask_(taskNum),
 running_(false),
 t1_(0),
 t2_(0),
-t1(1),
-t2(2),
-t3(3),
+
 exit_(false)
 { }
 

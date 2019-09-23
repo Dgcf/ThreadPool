@@ -36,7 +36,7 @@ void task_0()
 void Add_msg1()
 {
     vector<string> vec_msg = {
-        "hello", "zhangshuhi", "is", "big", "God", "She", "Very", "Stronge", "But", "Also", "Study", "Hard", "So", "what", "are", "you", "Waiting", "for"
+        "hello", "Zsh", "is", "big", "God", "She", "Very", "Stronge", "But", "Also", "Study", "Hard", "So", "what", "are", "you", "Waiting", "for"
     };
     int size = vec_msg.size();
     std::default_random_engine dre;
@@ -53,7 +53,7 @@ void Add_msg1()
 void Add_msg2()
 {
     vector<string> vec_msg = {
-        "哈啰", "张淑慧", "是一位", "大", "神级别", "她是", "非常", "强大", "但是", "也照样", "学习", "努力地", "所以", "什么", "是在", "你", "等待", "为了"
+        "哈啰", "张", "是一位", "大", "神级别", "她是", "非常", "强大", "但是", "也照样", "学习", "努力地", "所以", "什么", "是在", "你", "等待", "为了"
     };
     int size = vec_msg.size();
     std::default_random_engine dre;

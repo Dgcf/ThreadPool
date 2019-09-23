@@ -41,15 +41,12 @@ private:
 private:
     std::vector<unique_ptr<Thread>> thread_;
     std::deque<Task> taskQueue_;
-    TestClass t3;
     std::condition_variable notFullCond_;
     std::condition_variable notEmptyCond_;
-    
-    TestClass t2;
+
     std::mutex mutex_;
     int maxTask_;
     bool running_;
-    TestClass t1;
     std::atomic<int> t1_;
     std::atomic<int> t2_;
     std::atomic<bool> exit_;
